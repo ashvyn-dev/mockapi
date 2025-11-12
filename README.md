@@ -6,7 +6,7 @@ A full-stack mock API server for creating, managing, and testing API endpoints.
 
 Mock API provides a complete solution for mocking REST APIs during development and testing. It features a Django backend with Django REST Framework for API management and a React frontend for intuitive endpoint configuration and testing.
 
-![](./docs/img/image.png)
+![image](./docs/img/image.png)
 ## Features
 
 - JWT-based authentication and authorization

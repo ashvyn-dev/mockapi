@@ -1,3 +1,5 @@
+"""Models for Domains."""
+
 from django.db import models
 from django.core.validators import RegexValidator
 import json
@@ -6,6 +8,7 @@ import json
 class Collection(models.Model):
     """
     Represents a collection/project.
+
     Each collection is accessed via /{slug}/
     """
 
@@ -30,17 +33,21 @@ class Collection(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        """Meta class."""
+
         ordering = ["slug"]
         verbose_name = "Collection"
         verbose_name_plural = "Collections"
 
     def __str__(self):
+        """Give string representation."""
         return f"{self.slug} - {self.name}"
 
 
 class MockEndpoint(models.Model):
     """
-    Individual API endpoints within a collection
+    Individual API endpoints within a collection.
+
     URL structure: /{collection.slug}/{endpoint.path}
     """
 
@@ -133,23 +140,26 @@ class MockEndpoint(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        """Meta Class."""
+
         ordering = ["position", "path"]
         verbose_name = "Mock Endpoint"
         verbose_name_plural = "Mock Endpoints"
         unique_together = ["collection", "path", "http_method"]
 
     def __str__(self):
+        """Give string representation."""
         return f"{self.http_method} /{self.collection.slug}/{self.path}"
 
     def get_full_path(self):
-        """Get the full path for this endpoint"""
+        """Get the full path for this endpoint."""
         path = self.path.strip("/")
         return (
             f"/{self.collection.slug}/{path}" if path else f"/{self.collection.slug}/"
         )
 
     def get_response_headers(self):
-        """Get all response headers including custom ones"""
+        """Get all response headers including custom ones."""
         headers = {
             "Content-Type": self.content_type,
         }
@@ -165,7 +175,8 @@ class MockEndpoint(models.Model):
 
 class EndpointResponse(models.Model):
     """
-    Multiple responses for an endpoint
+    Multiple responses for an endpoint.
+
     Can be used for different scenarios (success, error, etc.)
     """
 
@@ -200,9 +211,12 @@ class EndpointResponse(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        """Meta class."""
+
         ordering = ["position", "created_at"]
         verbose_name = "Endpoint Response"
         verbose_name_plural = "Endpoint Responses"
 
     def __str__(self):
+        """Give string representation."""
         return f"{self.endpoint.display_name} - {self.name} ({self.response_status})"
