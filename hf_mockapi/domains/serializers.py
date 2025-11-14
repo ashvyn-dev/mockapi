@@ -1,6 +1,7 @@
-from rest_framework import serializers
-from .models import Collection, MockEndpoint, EndpointResponse
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from .models import Collection, EndpointResponse, MockEndpoint
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -1,12 +1,13 @@
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 import json
 import time
 
-from .models import Collection, MockEndpoint
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from logger.models import RequestLog
+
+from .models import Collection, MockEndpoint
 
 
 @csrf_exempt

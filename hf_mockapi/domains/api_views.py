@@ -1,17 +1,14 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate
-from .models import Collection, MockEndpoint, EndpointResponse
 from django.contrib.auth.models import User
-from .serializers import (
-    CollectionSerializer,
-    MockEndpointSerializer,
-    MockEndpointDetailSerializer,
-    EndpointResponseSerializer,
-    UserSerializer,
-)
+from rest_framework import status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+
+from .models import Collection, EndpointResponse, MockEndpoint
+from .serializers import (CollectionSerializer, EndpointResponseSerializer,
+                          MockEndpointDetailSerializer, MockEndpointSerializer,
+                          UserSerializer)
 
 
 class CollectionViewSet(viewsets.ModelViewSet):

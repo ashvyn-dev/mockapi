@@ -1,7 +1,8 @@
 """Models for Domains."""
 
-from django.db import models
 import json
+
+from django.db import models
 
 
 class Collection(models.Model):

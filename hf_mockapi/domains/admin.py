@@ -1,9 +1,10 @@
+import nested_admin
 from django.contrib import admin
+from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
-from django.db.models import Count
-import nested_admin
-from .models import Collection, MockEndpoint, EndpointResponse
+
+from .models import Collection, EndpointResponse, MockEndpoint
 
 
 class EndpointResponseInline(nested_admin.NestedTabularInline):

@@ -16,20 +16,14 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include, re_path
-from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from domains.api_views import (
-    CollectionViewSet,
-    MockEndpointViewSet,
-    EndpointResponseViewSet,
-    current_user,
-    register_user,
-)
+from django.urls import include, path, re_path
 from domains import views
+from domains.api_views import (CollectionViewSet, EndpointResponseViewSet,
+                               MockEndpointViewSet, current_user,
+                               register_user)
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
 admin.site.site_header = "HF Mock API Administration"
 admin.site.site_title = "HF Mock API"
