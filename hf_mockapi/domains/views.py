@@ -13,6 +13,7 @@ from logger.models import RequestLog
 def mock_api_handler(request, collection_slug, endpoint_path=""):
     """
     Main handler for all mock API requests
+
     URL structure: /{collection_slug}/{endpoint_path}
     """
     start_time = time.time()

@@ -1,7 +1,6 @@
 """Models for Domains."""
 
 from django.db import models
-from django.core.validators import RegexValidator
 import json
 
 
