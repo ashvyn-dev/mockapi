@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate
 from .models import Collection, MockEndpoint, EndpointResponse
+from django.contrib.auth.models import User
 from .serializers import (
     CollectionSerializer,
     MockEndpointSerializer,
