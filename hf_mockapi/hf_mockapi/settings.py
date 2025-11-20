@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "nested_admin",
     "domains",
     "logger",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [

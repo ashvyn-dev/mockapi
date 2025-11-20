@@ -21,6 +21,10 @@ class Collection(models.Model):
         max_length=200, help_text="Display name for this collection"
     )
     description = models.TextField(blank=True)
+    openapi_schema = models.TextField(
+        blank=True,
+        help_text="Custom OpenAPI YAML schema for this collection"
+    )
     is_active = models.BooleanField(default=True)
     created_by = models.ForeignKey(
         "auth.User",

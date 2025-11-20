@@ -38,11 +38,13 @@ router.register(r"responses", EndpointResponseViewSet, basename="response")
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("_nested_admin/", include("nested_admin.urls")),
+    # API routes (must come before catch-all patterns)
     path("api/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/register/", register_user, name="register"),
     path("api/auth/me/", current_user, name="current_user"),
     path("api/", include(router.urls)),
+    # Mock API catch-all routes (must come last)
     re_path(
         r"^(?P<collection_slug>[-\w]+)/(?P<endpoint_path>.+)$",
         views.mock_api_handler,

@@ -20,6 +20,7 @@ class CollectionSerializer(serializers.ModelSerializer):
             "slug",
             "name",
             "description",
+            "openapi_schema",
             "is_active",
             "created_by",
             "created_at",

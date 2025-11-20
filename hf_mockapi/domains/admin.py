@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from .models import Collection, EndpointResponse, MockEndpoint
 
@@ -32,7 +33,7 @@ class MockEndpointInline(nested_admin.NestedTabularInline):
 
 @admin.register(Collection)
 class CollectionAdmin(nested_admin.NestedModelAdmin):
-    list_display = ("slug_link", "name", "endpoint_count", "is_active", "created_at")
+    list_display = ("slug_link", "name", "endpoint_count", "is_active", "openapi_status", "created_at")
     list_filter = ("is_active", "created_at")
     search_fields = ("slug", "name", "description")
     prepopulated_fields = {"slug": ("name",)}
@@ -40,6 +41,11 @@ class CollectionAdmin(nested_admin.NestedModelAdmin):
 
     fieldsets = (
         ("Collection Information", {"fields": ("slug", "name", "description")}),
+        ("OpenAPI Schema", {
+            "fields": ("openapi_schema_display", "openapi_actions"),
+            "classes": ("collapse",),
+            "description": "View or manage the OpenAPI schema for this collection"
+        }),
         ("Settings", {"fields": ("is_active", "created_by")}),
         (
             "Metadata",
@@ -47,7 +53,7 @@ class CollectionAdmin(nested_admin.NestedModelAdmin):
         ),
     )
 
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at", "openapi_schema_display", "openapi_actions")
 
     def slug_link(self, obj):
         url = reverse("admin:domains_collection_change", args=[obj.pk])
@@ -69,6 +75,51 @@ class CollectionAdmin(nested_admin.NestedModelAdmin):
         return "0 endpoints"
 
     endpoint_count.short_description = "Endpoints"
+
+    def openapi_status(self, obj):
+        """Display OpenAPI schema status."""
+        if obj.openapi_schema:
+            return format_html(
+                '<span style="color: #28a745;">✓ Custom Schema</span>'
+            )
+        else:
+            return format_html(
+                '<span style="color: #6c757d;">Auto-generated</span>'
+            )
+    
+    openapi_status.short_description = "OpenAPI Status"
+
+    def openapi_schema_display(self, obj):
+        """Display OpenAPI schema in a readonly textarea."""
+        if not obj.pk:
+            return "Save the collection first to view OpenAPI schema."
+        from .openapi_utils import generate_openapi_schema
+        try:
+            schema = generate_openapi_schema(obj)
+            return mark_safe(f'<textarea rows="20" cols="100" readonly style="width:100%;">{schema}</textarea>')
+        except Exception as e:
+            return f"Error: {e}"
+    openapi_schema_display.short_description = "OpenAPI Schema (readonly)"
+
+    def openapi_actions(self, obj):
+        """Display API method info for OpenAPI schema management."""
+        if not obj.pk:
+            return "Save the collection first."
+        api_url = f"/api/collections/{obj.slug}/openapi-schema/"
+        download_url = f"/api/collections/{obj.slug}/openapi-schema/?format=yaml"
+        import_url = f"/api/collections/{obj.slug}/import-openapi/"
+        update_url = f"/api/collections/{obj.slug}/update-openapi/"
+        reset_url = f"/api/collections/{obj.slug}/reset-openapi/"
+        return mark_safe(
+            f'<div>'
+            f'<b>GET</b> {api_url} <br>'
+            f'<b>GET</b> {download_url} <br>'
+            f'<b>POST</b> {import_url} <br>'
+            f'<b>PUT</b> {update_url} <br>'
+            f'<b>DELETE</b> {reset_url} <br>'
+            f'</div>'
+        )
+    openapi_actions.short_description = "OpenAPI API Methods"
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
