@@ -2,6 +2,7 @@
 
 # helpers.py
 
+
 def get_full_path(mock_endpoint):
     """Get the full path for this endpoint."""
     path = mock_endpoint.path.strip("/")
@@ -10,6 +11,7 @@ def get_full_path(mock_endpoint):
         if path
         else f"/{mock_endpoint.collection.slug}/"
     )
+
 
 def get_response_headers(mock_endpoint):
     """Get all response headers including custom ones."""

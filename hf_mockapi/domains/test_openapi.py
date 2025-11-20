@@ -3,11 +3,9 @@
 import pytest
 from django.contrib.auth.models import User
 from domains.models import Collection, MockEndpoint
-from domains.openapi_utils import (
-    generate_openapi_schema,
-    validate_openapi_schema,
-    import_openapi_schema,
-)
+from domains.openapi_utils import (generate_openapi_schema,
+                                   import_openapi_schema,
+                                   validate_openapi_schema)
 
 
 @pytest.fixture
@@ -23,7 +21,7 @@ def collection(db, user):
         slug="testapi",
         name="Test API",
         description="Test API Description",
-        created_by=user
+        created_by=user,
     )
 
 
@@ -45,7 +43,7 @@ def endpoint(db, collection):
 def test_generate_openapi_schema(collection, endpoint):
     """Test OpenAPI schema generation."""
     schema = generate_openapi_schema(collection)
-    
+
     assert "openapi: 3.0.3" in schema
     assert "Test API" in schema
     assert "/users:" in schema
@@ -118,21 +116,21 @@ paths:
         '201':
           description: Created
 """
-    
+
     success, message = import_openapi_schema(collection, schema)
-    
+
     assert success
     assert "Successfully imported" in message
-    
+
     # Verify endpoints were created
     endpoints = collection.endpoints.all()
     assert endpoints.count() == 2
-    
+
     get_endpoint = endpoints.filter(http_method="GET", path="products").first()
     assert get_endpoint is not None
     assert get_endpoint.display_name == "Get Products"
     assert get_endpoint.response_status == 200
-    
+
     post_endpoint = endpoints.filter(http_method="POST", path="products").first()
     assert post_endpoint is not None
     assert post_endpoint.display_name == "Create Product"
@@ -141,10 +139,12 @@ paths:
 
 def test_custom_schema_storage(collection):
     """Test that custom schema is stored and retrieved."""
-    custom_schema = "openapi: 3.0.3\ninfo:\n  title: Custom\n  version: 1.0.0\npaths: {}"
-    
+    custom_schema = (
+        "openapi: 3.0.3\ninfo:\n  title: Custom\n  version: 1.0.0\npaths: {}"
+    )
+
     collection.openapi_schema = custom_schema
     collection.save()
-    
+
     schema = generate_openapi_schema(collection)
     assert schema == custom_schema
